@@ -67,6 +67,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transform-origin: center center;
     }
 
     .carousel-track {
@@ -768,6 +769,21 @@
       if (e.key === 'ArrowLeft') goSlide(-1);
       if (e.key === 'ArrowRight') goSlide(1);
     });
+
+    // ━━━ Responsive Scale ━━━
+    const DESIGN_W = 960; // 800 card + nav buttons
+    const DESIGN_H = 880; // 800 card + dots + margin
+    const wrap = document.querySelector('.carousel-wrap');
+
+    function applyScale() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.min(vw / DESIGN_W, vh / DESIGN_H, 1);
+      wrap.style.transform = `scale(${scale})`;
+    }
+
+    applyScale();
+    window.addEventListener('resize', applyScale);
 
     // Initialize
     updateView();
