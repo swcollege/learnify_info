@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Language" content="ko" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light only" />
+  <title>LG Learnify 카드뉴스</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" />
+
+  <style>
+    :root {
+      --learnify-purple-700: #5B33C2;
+      --learnify-purple-500: #7C5FCF;
+      --learnify-purple-300: #B5A7E8;
+      --learnify-purple-100: #ECE7FA;
+      --learnify-spark:      #7C5FCF;
+
+      --learnify-ink-900:    #1F2247;
+      --learnify-ink-700:    #2D3258;
+      --learnify-ink-500:    #6B7088;
+
+      --paper:               #FAFAF7;
+      --panel:               #F2F2F4;
+      --white:               #FFFFFF;
+      --hairline:            #E8E5DD;
+
+      --lg-heritage-red:     #A50034;
+
+      --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --dur-fast: 200ms;
+      --dur-base: 400ms;
+
+      --card-w: 800px;
+      --card-h: 800px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; color-scheme: light; }
+    body {
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif;
+      background: var(--panel);
+      color: var(--learnify-ink-900);
+      font-size: 21px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ━━━ Carousel Container ━━━ */
+    .carousel-wrap {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-track {
+      position: relative;
+      width: var(--card-w);
+      height: var(--card-h);
+    }
+
+    /* ━━━ Card base ━━━ */
+    .card {
+      width: var(--card-w);
+      height: var(--card-h);
+      background: var(--white);
+      border-radius: 24px;
+      border: 3px solid var(--learnify-purple-300);
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 40px -12px rgba(91, 51, 194, 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(60px);
+      transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out);
+    }
+    .card.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+    .card.prev {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ━━━ Navigation Buttons ━━━ */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--hairline);
+      background: var(--white);
+      cursor: pointer;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: all var(--dur-fast) var(--ease-out);
+      box-shadow: 0 4px 16px -4px rgba(0,0,0,0.1);
+      color: var(--learnify-ink-700);
+    }
+    .nav-btn:hover {
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      border-color: var(--learnify-purple-700);
+      box-shadow: 0 8px 24px -4px rgba(91, 51, 194, 0.3);
+    }
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      background: var(--panel);
+    }
+    .nav-btn:disabled:hover {
+      background: var(--panel);
+      color: var(--learnify-ink-700);
+      border-color: var(--hairline);
+      box-shadow: none;
+    }
+    .nav-btn.prev { left: calc(50% - var(--card-w) / 2 - 80px); }
+    .nav-btn.next { right: calc(50% - var(--card-w) / 2 - 80px); }
+
+    /* ━━━ Page indicator ━━━ */
+    .page-indicator {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 100;
+    }
+    .page-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--hairline);
+      transition: all var(--dur-fast) var(--ease-out);
+      cursor: pointer;
+    }
+    .page-dot.active {
+      background: var(--learnify-purple-700);
+      width: 28px;
+      border-radius: 5px;
+    }
+
+    /* ━━━ Slide number ━━━ */
+    .slide-num {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px;
+      color: var(--learnify-ink-500);
+      letter-spacing: 0.05em;
+    }
+
+    /* ━━━ Card 1 — Title ━━━ */
+    .card-title {
+      background: linear-gradient(135deg, var(--white) 60%, var(--learnify-purple-100) 100%);
+      padding: 60px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .card-title .branding {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .card-title .brand-name {
+      font-size: 23px;
+      font-weight: 600;
+      color: var(--learnify-ink-700);
+    }
+    .card-title .badge-beta {
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.05em;
+    }
+    .card-title h1 {
+      font-size: 68px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--learnify-ink-900);
+      margin-bottom: 16px;
+    }
+    .card-title h1 .purple { color: var(--learnify-purple-700); }
+    .card-title .subtitle {
+      font-size: 23px;
+      color: var(--learnify-ink-700);
+      line-height: 1.5;
+    }
+    .card-title .subtitle strong { color: var(--learnify-purple-700); font-weight: 600; }
+    .card-title .code-icon {
+      position: absolute;
+      top: 56px;
+      right: 60px;
+      width: 56px;
+      height: 56px;
+      background: var(--learnify-purple-700);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    /* ━━━ Card Steps (2, 3, 4) — Image based ━━━ */
+    .card-step {
+      padding: 48px 56px;
+      justify-content: flex-start;
+    }
+    .card-step .step-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+      margin-top: 40px;
+    }
+    .card-step .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      font-size: 29px;
+      font-weight: 800;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .card-step h2 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+    }
+    .card-step .step-desc {
+      font-size: 21px;
+      color: var(--learnify-ink-700);
+      margin-bottom: 24px;
+      padding-left: 60px;
+    }
+    .card-step .img-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .card-step .img-area img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid var(--hairline);
+      box-shadow: 0 4px 24px -8px rgba(0,0,0,0.1);
+    }
+    .img-indicator-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .img-indicator-wrapper img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Click indicator (pulsing ring — circle) */
+    .click-indicator {
+      position: absolute;
+      border: 3px solid var(--learnify-purple-700);
+      border-radius: 50%;
+      animation: clickPulse 1.8s infinite var(--ease-out);
+      pointer-events: none;
+    }
+    .click-indicator::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 2px solid var(--learnify-purple-300);
+      border-radius: 50%;
+      animation: clickPulseOuter 1.8s infinite var(--ease-out);
+    }
+
+    /* Click indicator (pulsing ring — rectangle) */
+    .click-indicator-rect {
+      position: absolute;
+      border: 3px solid var(--learnify-purple-700);
+      border-radius: 8px;
+      animation: clickPulse 1.8s infinite var(--ease-out);
+      pointer-events: none;
+    }
+    .click-indicator-rect::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border: 2px solid var(--learnify-purple-300);
+      border-radius: 12px;
+      animation: clickPulseOuter 1.8s infinite var(--ease-out);
+    }
+
+    /* Click label */
+    .click-label {
+      position: absolute;
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      font-size: 17px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px -2px rgba(91, 51, 194, 0.4);
+      pointer-events: none;
+    }
+    .click-label::before {
+      content: '👆';
+      margin-right: 4px;
+    }
+
+    @keyframes clickPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.06); }
+    }
+    @keyframes clickPulseOuter {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ━━━ Card 5 — Features ━━━ */
+    .card-features {
+      padding: 56px 60px;
+      justify-content: flex-start;
+    }
+    .card-features h2 {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .card-features h2 strong { color: var(--learnify-purple-700); }
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      flex: 1;
+      justify-content: center;
+    }
+    .feature-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .feature-item .f-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--learnify-purple-100);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 22px;
+    }
+    .feature-item .f-body h4 {
+      font-size: 23px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--learnify-ink-900);
+    }
+    .feature-item .f-body p {
+      font-size: 19px;
+      color: var(--learnify-ink-700);
+      line-height: 1.55;
+    }
+    .feature-item .f-body .example {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: var(--learnify-purple-700);
+      margin-top: 4px;
+    }
+
+    /* ━━━ Card 6 — CTA to Guide ━━━ */
+    .card-cta {
+      padding: 60px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(160deg, var(--white) 50%, var(--learnify-purple-100) 100%);
+    }
+    .card-cta h2 {
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .card-cta h2 .purple { color: var(--learnify-purple-700); }
+    .card-cta .cta-highlight {
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--learnify-purple-700);
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .card-cta .cta-sub {
+      font-size: 22px;
+      color: var(--learnify-ink-700);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    .card-cta .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+    }
+    .card-cta .cta-btn:hover {
+      background: var(--learnify-ink-900);
+      transform: translateY(-2px);
+    }
+
+    /* ━━━ Card 7 — Feedback Event ━━━ */
+    .card-event {
+      padding: 60px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: var(--white);
+    }
+    .card-event h2 {
+      font-size: 39px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 36px;
+      max-width: 560px;
+    }
+    .card-event h2 strong { color: var(--learnify-purple-700); }
+    .card-event .event-prize {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .card-event .prize-card {
+      background: linear-gradient(135deg, #1EC800 0%, #00C73C 100%);
+      color: var(--white);
+      padding: 24px 32px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 32px -8px rgba(30, 200, 0, 0.3);
+    }
+    .card-event .prize-card .npay-logo {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .card-event .prize-card .npay-amount {
+      font-size: 42px;
+      font-weight: 800;
+    }
+    .card-event .event-note {
+      font-size: 18px;
+      color: var(--learnify-ink-500);
+      margin-top: 12px;
+    }
+
+    /* ━━━ Card 8 — Final CTA ━━━ */
+    .card-final {
+      padding: 60px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(160deg, var(--learnify-purple-100) 0%, var(--white) 60%);
+    }
+    .card-final h2 {
+      font-size: 55px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .card-final h2 .purple { color: var(--learnify-purple-700); }
+    .card-final .final-sub {
+      font-size: 26px;
+      color: var(--learnify-ink-700);
+      margin-bottom: 40px;
+    }
+
+    /* ━━━ Sparkle ━━━ */
+    .sparkle {
+      color: var(--learnify-purple-500);
+      font-size: 21px;
+    }
+
+    /* ━━━ Responsive ━━━ */
+    @media (max-width: 960px) {
+      :root { --card-w: calc(100vw - 140px); --card-h: calc(100vh - 100px); }
+      .nav-btn.prev { left: 16px; }
+      .nav-btn.next { right: 16px; }
+      .nav-btn { width: 44px; height: 44px; font-size: 23px; }
+      .card-title h1 { font-size: 47px; }
+      .card-title { padding: 40px; }
+      .card-step { padding: 32px; }
+      .card-step h2 { font-size: 31px; }
+      .card-features { padding: 36px; }
+      .card-features h2 { font-size: 29px; }
+      .card-cta { padding: 40px; }
+      .card-cta h2 { font-size: 34px; }
+      .card-cta .cta-highlight { font-size: 36px; }
+      .card-event { padding: 40px; }
+      .card-event h2 { font-size: 29px; }
+      .card-final { padding: 40px; }
+      .card-final h2 { font-size: 39px; }
+    }
+    @media (max-width: 600px) {
+      :root { --card-w: calc(100vw - 100px); --card-h: calc(100vh - 80px); }
+      .nav-btn.prev { left: 8px; }
+      .nav-btn.next { right: 8px; }
+      .nav-btn { width: 36px; height: 36px; font-size: 21px; }
+      .card-step .step-desc { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="carousel-wrap">
+    <!-- Navigation Buttons -->
+    <button class="nav-btn prev" id="btnPrev" onclick="goSlide(-1)" aria-label="이전" disabled>←</button>
+    <button class="nav-btn next" id="btnNext" onclick="goSlide(1)" aria-label="다음">→</button>
+
+    <!-- Carousel Track -->
+    <div class="carousel-track">
+
+      <!-- ━━━ Card 1: Title ━━━ -->
+      <div class="card card-title active" data-idx="0">
+        <div class="branding">
+          <!-- <span class="brand-name">LGenie<span style="color:var(--learnify-purple-700);font-weight:800">ax</span></span> -->
+          <span class="badge-beta">Beta</span>
+        </div>
+        <h1>LG <span class="purple">Learnify</span>로<br/>소프트웨어 학습을<br/>시작하세요!</h1>
+        <p class="subtitle">실무에 바로 쓰는 <strong>소프트웨어 학습</strong>,<br/>LG Learnify가 함께 합니다.</p>
+        <div class="code-icon">&lt;/&gt;</div>
+        <span class="slide-num">1/8</span>
+      </div>
+
+      <!-- ━━━ Card 2: 엘지니 접속 ━━━ -->
+      <div class="card card-step" data-idx="1">
+        <div class="step-header">
+          <div class="step-badge">1</div>
+          <h2>엘지니 접속</h2>
+        </div>
+        <p class="step-desc">EP 우측 상단에서 엘지니 버튼을 클릭하세요.</p>
+        <div class="img-area">
+          <img src="_screenshots/cardnews-step1.png" alt="EP 상단 바에서 엘지니 아이콘 클릭" />
+          <!-- 엘지니 버튼(보라색 로봇 아이콘) 위치 표시 -->
+          <div class="click-indicator" style="width:48px;height:48px;top:46%;left:44%;"></div>
+          <span class="click-label" style="top:calc(46% + 36px);left:44%;">클릭!</span>
+        </div>
+        <span class="slide-num">2/8</span>
+      </div>
+
+      <!-- ━━━ Card 3: 에이전트 전체보기 ━━━ -->
+      <div class="card card-step" data-idx="2">
+        <div class="step-header">
+          <div class="step-badge">2</div>
+          <h2>에이전트 전체보기</h2>
+        </div>
+        <p class="step-desc">좌측 메뉴에서 '에이전트 전체보기'를 선택하세요.</p>
+        <div class="img-area">
+          <div class="img-indicator-wrapper">
+            <img src="_screenshots/cardnews-step2.png" alt="에이전트 목록에서 전체보기 클릭" />
+            <!-- 에이전트 전체보기 버튼 (하단) -->
+            <div class="click-indicator-rect" style="width:38%;height:5%;top:91%;left:20%;"></div>
+            <span class="click-label" style="top:97%;left:39%;transform:translateX(-50%)">클릭!</span>
+          </div>
+        </div>
+        <span class="slide-num">3/8</span>
+      </div>
+
+      <!-- ━━━ Card 4: 연구/개발 카테고리에서 LG Learnify 선택 ━━━ -->
+      <div class="card card-step" data-idx="3">
+        <div class="step-header">
+          <div class="step-badge">3</div>
+          <h2>연구/개발 카테고리에서<br/>LG Learnify 선택</h2>
+        </div>
+        <p class="step-desc">'연구/개발' 카테고리에서 LG Learnify를 선택합니다.</p>
+        <div class="img-area">
+          <div class="img-indicator-wrapper">
+            <img src="_screenshots/cardnews-step3.png" alt="연구/개발 카테고리에서 LG Learnify 선택" />
+            <!-- LG Learnify 카드 박스 전체 -->
+            <div class="click-indicator-rect" style="width:27%;height:23%;top:68%;left:43%;"></div>
+            <span class="click-label" style="top:92%;left:55%;transform:translateX(-50%)">클릭!</span>
+          </div>
+        </div>
+        <span class="slide-num">4/8</span>
+      </div>
+
+      <!-- ━━━ Card 5: 기능 소개 ━━━ -->
+      <div class="card card-features" data-idx="4">
+        <h2><strong>LG Learnify</strong>는 소프트웨어 학습 지원을<br/>위해 아래 기능을 제공합니다.</h2>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="f-icon">🎯</div>
+            <div class="f-body">
+              <h4>학습 과정 추천</h4>
+              <p>관심 주제에 맞는 최적의 학습 과정을 추천합니다.</p>
+              <div class="example">쏘칼패스 · Udemy · 러크tv에서 관련 코스를 하나씩 추천</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="f-icon">🗺️</div>
+            <div class="f-body">
+              <h4>학습 로드맵 설계</h4>
+              <p>특정 역량을 키우기 위한 난이도별 단계적 학습 경로를 자동으로 구성합니다</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="f-icon">🔍</div>
+            <div class="f-body">
+              <h4>교육 정보 검색</h4>
+              <p>SW College 제도 소개·일정·신청 방법 등 업무지식 질의응답을 지원합니다.</p>
+              <div class="example">소프트웨어 전문가 본부별 현황 등</div>
+            </div>
+          </div>
+        </div>
+        <span class="slide-num">5/8</span>
+      </div>
+
+      <!-- ━━━ Card 6: 가이드 CTA ━━━ -->
+      <div class="card card-cta" data-idx="5">
+        <h2>더 빠른 접속을 원하신다면?</h2>
+        <div class="cta-highlight"><span class="sparkle">✦</span> 여기를 클릭하세요!</div>
+        <p class="cta-sub">버튼을 클릭하면 바로<br/><strong style="color:var(--learnify-purple-700)">LG Learnify 가이드</strong>로 이동합니다.</p>
+        <a href="index_v2.html" class="cta-btn" target="_blank">
+          <span>LG Learnify 가이드 열기</span>
+          <span>→</span>
+        </a>
+        <span class="slide-num">6/8</span>
+      </div>
+
+      <!-- ━━━ Card 7: 피드백 이벤트 ━━━ -->
+      <div class="card card-event" data-idx="6">
+        <h2><span style="white-space:nowrap">6월 한달 동안 피드백을 제출하신 분들 중</span><br/>추첨하여 <strong>네이버페이 상품권</strong>을<br/>제공합니다.</h2>
+        <div class="event-prize">
+          <div class="prize-card">
+            <div class="npay-logo">N Pay</div>
+            <div class="npay-amount">10,000원</div>
+          </div>
+        </div>
+        <p class="event-note">피드백은 Learnify 챗봇 내 피드백 양식을 통해 제출하실 수 있습니다.</p>
+        <span class="slide-num">7/8</span>
+      </div>
+
+      <!-- ━━━ Card 8: 최종 CTA ━━━ -->
+      <div class="card card-final" data-idx="7">
+        <h2>지금 바로<br/><span class="purple">LG Learnify</span>와 함께<br/>성장해보세요!</h2>
+        <p class="final-sub">당신의 소프트웨어 역량 성장을<br/>응원합니다.</p>
+        <span class="slide-num">8/8</span>
+      </div>
+
+    </div>
+
+    <!-- Page indicator dots -->
+    <div class="page-indicator" id="dots"></div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const total = cards.length;
+    let current = 0;
+
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const dotsEl = document.getElementById('dots');
+
+    // Create dots
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(dot);
+    }
+
+    function updateView() {
+      cards.forEach((card, idx) => {
+        card.classList.remove('active', 'prev');
+        if (idx === current) {
+          card.classList.add('active');
+        } else if (idx < current) {
+          card.classList.add('prev');
+        }
+      });
+
+      // Update dots
+      dotsEl.querySelectorAll('.page-dot').forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === current);
+      });
+
+      // Update buttons
+      btnPrev.disabled = current === 0;
+      btnNext.disabled = current === total - 1;
+    }
+
+    function goSlide(dir) {
+      const next = current + dir;
+      if (next < 0 || next >= total) return;
+      current = next;
+      updateView();
+    }
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= total) return;
+      current = idx;
+      updateView();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') goSlide(-1);
+      if (e.key === 'ArrowRight') goSlide(1);
+    });
+
+    // Initialize
+    updateView();
+  </script>
+</body>
+</html>
