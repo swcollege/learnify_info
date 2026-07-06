@@ -74,11 +74,18 @@
       background: linear-gradient(135deg, var(--white) 55%, var(--learnify-purple-100) 100%);
       border-bottom: 1px solid var(--hairline);
     }
+    .notice-header .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
     .notice-header .branding {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 18px;
     }
     .notice-header .brand-name {
       font-size: 16px;
@@ -94,6 +101,45 @@
       padding: 3px 10px;
       border-radius: 10px;
       letter-spacing: 0.05em;
+    }
+    .notice-header .header-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .notice-header .header-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--dur-fast) var(--ease-out),
+                  border-color var(--dur-fast) var(--ease-out),
+                  transform var(--dur-fast) var(--ease-out);
+    }
+    .notice-header .link-guide {
+      color: var(--learnify-purple-700);
+      background: var(--white);
+      border: 1.5px solid var(--learnify-purple-300);
+    }
+    .notice-header .link-guide:hover {
+      background: var(--learnify-purple-100);
+      border-color: var(--learnify-purple-700);
+      transform: translateY(-1px);
+    }
+    .notice-header .link-learnify {
+      color: var(--white);
+      background: var(--learnify-purple-700);
+      border: 1.5px solid var(--learnify-purple-700);
+    }
+    .notice-header .link-learnify:hover {
+      background: var(--learnify-ink-900);
+      border-color: var(--learnify-ink-900);
+      transform: translateY(-1px);
     }
     .notice-header .eyebrow {
       font-size: 14px;
@@ -306,6 +352,8 @@
       .notice-header { padding: 28px 24px 24px; }
       .notice-header h1 { font-size: 28px; }
       .notice-header .subtitle { font-size: 15px; }
+      .notice-header .header-links { gap: 6px; }
+      .notice-header .header-link { font-size: 12px; padding: 6px 10px; }
       .notice-header .celebrate-icon { top: 24px; right: 24px; width: 40px; height: 40px; font-size: 22px; }
       .prize-banner { padding: 16px 24px; gap: 14px; }
       .winner-section { padding: 24px 24px 28px; }
@@ -321,9 +369,15 @@
 
     <!-- ━━━ Header ━━━ -->
     <div class="notice-header">
-      <div class="branding">
-        <span class="brand-name">LG <span class="accent">Learnify</span></span>
-        <span class="badge-beta">Beta</span>
+      <div class="header-bar">
+        <div class="branding">
+          <span class="brand-name">LG <span class="accent">Learnify</span></span>
+          <span class="badge-beta">Beta</span>
+        </div>
+        <div class="header-links">
+          <a href="http://learnify.lge.com/guide.laf" class="header-link link-guide" target="_blank" rel="noopener noreferrer">가이드 바로가기</a>
+          <a href="http://learnify.lge.com/jsp/common/learnify_ssoLogin.jsp" class="header-link link-learnify" target="_blank" rel="noopener noreferrer">Learnify 바로가기 →</a>
+        </div>
       </div>
       <div class="eyebrow">✦ 피드백 이벤트 당첨자 발표</div>
       <h1>축하합니다!<br/><span class="purple">당첨자</span>가 발표되었습니다 🎉</h1>
