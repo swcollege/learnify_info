@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Language" content="ko" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light only" />
+  <title>LG Learnify 피드백 이벤트 당첨자 발표</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" />
+
+  <style>
+    :root {
+      --learnify-purple-700: #5B33C2;
+      --learnify-purple-500: #7C5FCF;
+      --learnify-purple-300: #B5A7E8;
+      --learnify-purple-100: #ECE7FA;
+      --learnify-spark:      #7C5FCF;
+
+      --learnify-ink-900:    #1F2247;
+      --learnify-ink-700:    #2D3258;
+      --learnify-ink-500:    #6B7088;
+
+      --paper:               #FAFAF7;
+      --panel:               #F2F2F4;
+      --white:               #FFFFFF;
+      --hairline:            #E8E5DD;
+
+      --lg-heritage-red:     #A50034;
+
+      --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --dur-fast: 200ms;
+      --dur-base: 400ms;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; color-scheme: light; }
+    body {
+      font-family: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif;
+      background: var(--panel);
+      color: var(--learnify-ink-900);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ━━━ Notice Card ━━━ */
+    .notice-card {
+      width: 100%;
+      max-width: 760px;
+      background: var(--white);
+      border-radius: 18px;
+      border: 2px solid var(--learnify-purple-300);
+      overflow: hidden;
+      box-shadow: 0 12px 40px -12px rgba(91, 51, 194, 0.18);
+    }
+
+    /* ━━━ Header ━━━ */
+    .notice-header {
+      position: relative;
+      padding: 40px 44px 32px;
+      background: linear-gradient(135deg, var(--white) 55%, var(--learnify-purple-100) 100%);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .notice-header .branding {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .notice-header .brand-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--learnify-ink-700);
+    }
+    .notice-header .brand-name .accent { color: var(--learnify-purple-700); font-weight: 800; }
+    .notice-header .badge-beta {
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      letter-spacing: 0.05em;
+    }
+    .notice-header .eyebrow {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--learnify-purple-700);
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .notice-header h1 {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--learnify-ink-900);
+      margin-bottom: 12px;
+    }
+    .notice-header h1 .purple { color: var(--learnify-purple-700); }
+    .notice-header .subtitle {
+      font-size: 17px;
+      color: var(--learnify-ink-700);
+      line-height: 1.55;
+      max-width: 560px;
+    }
+    .notice-header .subtitle strong { color: var(--learnify-purple-700); font-weight: 600; }
+    .notice-header .celebrate-icon {
+      position: absolute;
+      top: 36px;
+      right: 44px;
+      width: 48px;
+      height: 48px;
+      background: var(--learnify-purple-700);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 6px 18px -4px rgba(91, 51, 194, 0.35);
+    }
+
+    /* ━━━ Prize banner ━━━ */
+    .prize-banner {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 20px 44px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .prize-banner .prize-card {
+      background: linear-gradient(135deg, #1EC800 0%, #00C73C 100%);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: 12px;
+      text-align: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 20px -6px rgba(30, 200, 0, 0.3);
+    }
+    .prize-banner .prize-card .npay-logo {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .prize-banner .prize-card .npay-amount {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .prize-banner .prize-text h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--learnify-ink-900);
+      margin-bottom: 3px;
+    }
+    .prize-banner .prize-text p {
+      font-size: 14px;
+      color: var(--learnify-ink-500);
+    }
+
+    /* ━━━ Winner section ━━━ */
+    .winner-section {
+      padding: 28px 44px 36px;
+    }
+    .winner-section .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .winner-section .section-head h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--learnify-ink-900);
+    }
+    .winner-section .section-head .count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--learnify-purple-700);
+      background: var(--learnify-purple-100);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .winner-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .winner-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      transition: border-color var(--dur-fast) var(--ease-out),
+                  box-shadow var(--dur-fast) var(--ease-out),
+                  transform var(--dur-fast) var(--ease-out);
+    }
+    .winner-item:hover {
+      border-color: var(--learnify-purple-300);
+      box-shadow: 0 4px 14px -6px rgba(91, 51, 194, 0.2);
+      transform: translateY(-1px);
+    }
+    .winner-item .w-rank {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--learnify-purple-700);
+      color: var(--white);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .winner-item .w-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .winner-item .w-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    .winner-item .w-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--learnify-ink-900);
+    }
+    .winner-item .w-dept {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--learnify-purple-700);
+      background: var(--learnify-purple-100);
+      padding: 2px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .winner-item .w-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--learnify-ink-500);
+      letter-spacing: 0.02em;
+    }
+
+    /* ━━━ Footer ━━━ */
+    .notice-footer {
+      padding: 22px 44px 32px;
+      border-top: 1px solid var(--hairline);
+      background: var(--paper);
+    }
+    .notice-footer .foot-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--learnify-ink-700);
+      line-height: 1.6;
+    }
+    .notice-footer .foot-note + .foot-note { margin-top: 8px; }
+    .notice-footer .foot-note .dot {
+      color: var(--learnify-purple-700);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .notice-footer .foot-meta {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--learnify-ink-500);
+    }
+    .notice-footer .foot-meta .mono { letter-spacing: 0.03em; }
+    .notice-footer .foot-meta .sparkle { color: var(--learnify-purple-500); }
+
+    /* ━━━ Responsive ━━━ */
+    @media (max-width: 640px) {
+      body { padding: 20px 12px; }
+      .notice-header { padding: 28px 24px 24px; }
+      .notice-header h1 { font-size: 28px; }
+      .notice-header .subtitle { font-size: 15px; }
+      .notice-header .celebrate-icon { top: 24px; right: 24px; width: 40px; height: 40px; font-size: 22px; }
+      .prize-banner { padding: 16px 24px; gap: 14px; }
+      .winner-section { padding: 24px 24px 28px; }
+      .winner-grid { grid-template-columns: 1fr; }
+      .notice-footer { padding: 20px 24px 28px; }
+      .notice-footer .foot-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="notice-card">
+
+    <!-- ━━━ Header ━━━ -->
+    <div class="notice-header">
+      <div class="branding">
+        <span class="brand-name">LG <span class="accent">Learnify</span></span>
+        <span class="badge-beta">Beta</span>
+      </div>
+      <div class="eyebrow">✦ 피드백 이벤트 당첨자 발표</div>
+      <h1>축하합니다!<br/><span class="purple">당첨자</span>가 발표되었습니다 🎉</h1>
+      <p class="subtitle">
+        6월 한 달 동안 <strong>LG Learnify 피드백</strong>에 참여해 주신 모든 분께 감사드립니다.<br/>
+        추첨을 통해 아래 <strong>16분</strong>이 당첨자로 선정되었습니다.
+      </p>
+    </div>
+
+    <!-- ━━━ Prize banner ━━━ -->
+    <div class="prize-banner">
+      <div class="prize-card">
+        <div class="npay-logo">N Pay</div>
+        <div class="npay-amount">10,000원</div>
+      </div>
+      <div class="prize-text">
+        <h3>네이버페이 상품권 (10,000원)</h3>
+        <p>당첨되신 16분께 개별 지급됩니다.</p>
+      </div>
+    </div>
+
+    <!-- ━━━ Winner list ━━━ -->
+    <div class="winner-section">
+      <div class="section-head">
+        <h2>당첨자 명단</h2>
+        <span class="count">총 16명</span>
+      </div>
+
+      <div class="winner-grid">
+        <div class="winner-item">
+          <div class="w-rank">01</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김종호</span><span class="w-dept">VS사업본부</span></div>
+            <div class="w-id">jo******im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">02</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">류*걸</span><span class="w-dept">CTO부문</span></div>
+            <div class="w-id">do********yu</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">03</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*우</span><span class="w-dept">한국영업본부</span></div>
+            <div class="w-id">do***********im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">04</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">강*권</span><span class="w-dept">CTO부문</span></div>
+            <div class="w-id">hk***ng</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">05</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">장*영</span><span class="w-dept">생산기술원</span></div>
+            <div class="w-id">hy*********ng</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">06</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*엽</span><span class="w-dept">HS사업본부</span></div>
+            <div class="w-id">in******im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">07</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">임*수</span><span class="w-dept">HS사업본부</span></div>
+            <div class="w-id">ja********im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">08</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">이*광</span><span class="w-dept">생산기술원</span></div>
+            <div class="w-id">ja**********ee</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">09</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">홍*섭</span><span class="w-dept">HS사업본부</span></div>
+            <div class="w-id">ji*******ng</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">10</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">유*오</span><span class="w-dept">CTO부문</span></div>
+            <div class="w-id">jo**ou</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">11</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*원</span><span class="w-dept">HS사업본부</span></div>
+            <div class="w-id">sa********im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">12</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*현</span><span class="w-dept">VS사업본부</span></div>
+            <div class="w-id">se**********im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">13</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*진</span><span class="w-dept">VS사업본부</span></div>
+            <div class="w-id">su********im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">14</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*진</span><span class="w-dept">CTO부문</span></div>
+            <div class="w-id">su*******im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">15</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">김*락</span><span class="w-dept">HS사업본부</span></div>
+            <div class="w-id">wa****im</div>
+          </div>
+        </div>
+        <div class="winner-item">
+          <div class="w-rank">16</div>
+          <div class="w-info">
+            <div class="w-name-row"><span class="w-name">최*림</span><span class="w-dept">MS사업본부</span></div>
+            <div class="w-id">ye*******oi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ━━━ Footer ━━━ -->
+    <div class="notice-footer">
+      <div class="foot-note">
+        <span class="dot">·</span>
+        <span>상품권은 등록된 연락처를 통해 개별 안내드릴 예정입니다.</span>
+      </div>
+      <div class="foot-note">
+        <span class="dot">·</span>
+        <span>앞으로도 <strong>LG Learnify</strong>에 많은 관심과 피드백 부탁드립니다.</span>
+      </div>
+      <div class="foot-meta">
+        <span>LG Learnify 피드백 이벤트 · 2026.06</span>
+        <span class="mono"><span class="sparkle">✦</span> LG Learnify</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
